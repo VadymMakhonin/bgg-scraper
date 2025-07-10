@@ -1,5 +1,5 @@
 {
-  "name": "bgg-scrapper",
+  "name": "bgg-scraper",
   "version": "1.0.0",
   "description": "BoardGameGeek scraper to find suitable board games for children",
   "main": "dist/main.js",
