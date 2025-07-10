@@ -1,0 +1,37 @@
+{
+  "name": "bgg-scrapper",
+  "version": "1.0.0",
+  "description": "BoardGameGeek scraper to find suitable board games for children",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "npm run build && node dist/main.js",
+    "dev": "ts-node src/main.ts",
+    "scrape": "ts-node src/run-scraper.ts",
+    "scrape:test": "ts-node src/run-scraper.ts 1",
+    "scrape:all": "ts-node src/run-scraper.ts 50",
+    "scrape:debug": "ts-node src/run-scraper.ts --debug",
+    "scrape:debug-page": "ts-node src/run-scraper.ts 1 --debug",
+    "scrape:details": "ts-node src/run-detail-scraper.ts",
+    "scrape:details:debug": "ts-node src/run-detail-scraper.ts --debug",
+    "scrape:details:parallel": "ts-node src/run-parallel-detail-scraper.ts",
+    "scrape:details:parallel:debug": "ts-node src/run-parallel-detail-scraper.ts --debug",
+    "db:studio": "npx prisma studio",
+    "db:push": "npx prisma db push",
+    "db:generate": "npx prisma generate",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["bgg", "boardgamegeek", "scraper", "board-games"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "playwright": "^1.40.0",
+    "@prisma/client": "^5.0.0"
+  },
+  "devDependencies": {
+    "prisma": "^5.0.0",
+    "typescript": "^5.0.0",
+    "ts-node": "^10.9.0",
+    "@types/node": "^20.0.0"
+  }
+}

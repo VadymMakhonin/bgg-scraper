@@ -1,0 +1,141 @@
+// BGG Board Game Scraper Database Schema
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Game {
+  id                     Int      @id @default(autoincrement())
+  rank                   Int
+  name                   String
+  bggUrl                 String   @unique @map("bgg_url")
+  year                   Int?
+  minPlayers             Int?     @map("min_players")
+  maxPlayers             Int?     @map("max_players")
+  minPlayingTime         Int?     @map("min_playing_time")
+  maxPlayingTime         Int?     @map("max_playing_time")
+  weight                 Float?
+  languageDependenceId   Int?     @map("language_dependence_id")
+  officialAge            Int?     @map("official_age")
+  scrapedAt              DateTime @default(now()) @map("scraped_at")
+  processingBy           String?  @map("processing_by")
+  processingAt           DateTime? @map("processing_at")
+
+  // Relations
+  languageDependence     LanguageDependence? @relation(fields: [languageDependenceId], references: [id])
+  communityPlayerRatings CommunityPlayerRating[]
+  communityAgeRatings    CommunityAgeRating[]
+  gameCategories         GameCategory[]
+  gameMechanisms         GameMechanism[]
+  gameFamilies           GameFamily[]
+
+  @@map("games")
+}
+
+model LanguageDependence {
+  id    Int    @id @default(autoincrement())
+  text  String @unique
+
+  // Relations
+  games Game[]
+
+  @@map("language_dependencies")
+}
+
+model Category {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  // Relations
+  gameCategories GameCategory[]
+
+  @@map("categories")
+}
+
+model Mechanism {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  // Relations
+  gameMechanisms GameMechanism[]
+
+  @@map("mechanisms")
+}
+
+model Family {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  // Relations
+  gameFamilies GameFamily[]
+
+  @@map("families")
+}
+
+model CommunityPlayerRating {
+  gameId                   Int   @map("game_id")
+  playerCount              Int   @map("player_count")
+  bestPercentage           Float? @map("best_percentage")
+  recommendedPercentage    Float? @map("recommended_percentage")
+  notRecommendedPercentage Float? @map("not_recommended_percentage")
+  totalVotes               Int?   @map("total_votes")
+
+  // Relations
+  game Game @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  @@id([gameId, playerCount])
+  @@map("community_player_ratings")
+}
+
+model CommunityAgeRating {
+  gameId     Int   @map("game_id")
+  age        Int
+  percentage Float?
+  voteCount  Int?  @map("vote_count")
+
+  // Relations
+  game Game @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  @@id([gameId, age])
+  @@map("community_age_ratings")
+}
+
+model GameCategory {
+  gameId     Int @map("game_id")
+  categoryId Int @map("category_id")
+
+  // Relations
+  game     Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id])
+
+  @@id([gameId, categoryId])
+  @@map("game_categories")
+}
+
+model GameMechanism {
+  gameId      Int @map("game_id")
+  mechanismId Int @map("mechanism_id")
+
+  // Relations
+  game      Game      @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  mechanism Mechanism @relation(fields: [mechanismId], references: [id])
+
+  @@id([gameId, mechanismId])
+  @@map("game_mechanisms")
+}
+
+model GameFamily {
+  gameId   Int @map("game_id")
+  familyId Int @map("family_id")
+
+  // Relations
+  game   Game   @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  family Family @relation(fields: [familyId], references: [id])
+
+  @@id([gameId, familyId])
+  @@map("game_families")
+}
